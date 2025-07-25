@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Tax Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="syle.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <h1>Income Tax Calculator</h1>
+            <p>Calculate your annual and monthly tax liability</p>
+        </div>
+
+        <div class="content">
+            <div class="form-group">
+                <label for="monthlySalary"><i class="fas fa-money-bill-wave"></i> Monthly Salary (Rs):</label>
+                <input type="number" id="monthlySalary" min="0" step="1000" placeholder="Enter your monthly salary">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-bolt"></i> Electricity Cost Grade:</label>
+                <select id="electricityGrade">
+                    <option value="0">None</option>
+                    <option value="774">Grade 1 (Rs 774/month)</option>
+                    <option value="774">Grade 2 (Rs 774/month)</option>
+                    <option value="774">Grade 3 (Rs 774/month)</option>
+                    <option value="774">Grade 4 (Rs 774/month)</option>
+                    <option value="1277">Grade 5 (Rs 1,277/month)</option>
+                    <option value="1277">Grade 6 (Rs 1,277/month)</option>
+                    <option value="1277">Grade 7 (Rs 1,277/month)</option>
+                    <option value="1277">Grade 8 (Rs 1,277/month)</option>
+                    <option value="1277">Grade 9 (Rs 1,277/month)</option>
+                    <option value="1277">Grade 10 (Rs 1,277/month)</option>
+                    <option value="1780">Grade 11 (Rs 1,780/month)</option>
+                    <option value="1780">Grade 12 (Rs 1,780/month)</option>
+                    <option value="1780">Grade 13 (Rs 1,780/month)</option>
+                    <option value="1780">Grade 14 (Rs 1,780/month)</option>
+                    <option value="1780">Grade 15 (Rs 1,780/month)</option>
+                    <option value="10278">Grade 16 (Rs 10,278/month)</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label><i class="fas fa-home"></i> Housing Status:</label>
+                <div class="radio-group">
+                    <input type="radio" id="houseYes" name="house" value="yes" checked>
+                    <label for="houseYes">Own a house</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="houseNo" name="house" value="no">
+                    <label for="houseNo">Don't own a house</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-home"></i> House Rent Rate:</label>
+                <select id="houseRentRate">
+                    <option value="30">House Rent 30%</option>
+                    <option value="45">House Rent 45%</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button id="calculateBtn" class="btn-primary">
+                    <i class="fas fa-calculator"></i> Calculate
+                </button>
+                <button id="saveBtn" class="btn-success">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button id="printBtn" class="btn-info">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button id="clearBtn" class="btn-warning">
+                    <i class="fas fa-trash-alt"></i> Clear
+                </button>
+            </div>
+
+            <div id="results" class="results-container">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Calculation Results</h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span>Annual Salary:</span>
+                        <span id="annualSalary" class="result-value">Rs 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Annual Additions:</span>
+                        <span id="annualAdditions" class="result-value">Rs 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Effective Tax Rate:</span>
+                        <span id="taxRate" class="result-value">0%</span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span>Total Income:</span>
+                        <span id="totalIncome" class="result-value">Rs 0</span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span>Annual Tax:</span>
+                        <span id="annualTax" class="result-value">Rs 0</span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span>Monthly Tax:</span>
+                        <span id="monthlyTax" class="result-value">Rs 0</span>
+                    </div>
+
+                </div>
+
+                <div id="savedCalculations" class="saved-calculations">
+                    <h3><i class="fas fa-history"></i> Saved Calculations</h3>
+                    <div id="savedList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

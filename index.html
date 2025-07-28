@@ -12,11 +12,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-icon">
-                <i class="fas fa-calculator"></i>
+            <div class="header-icon" style="display: flex; justify-content: center; align-items: center;">
+                <div style="background: #fff; border-radius: 50%; width: 75px; height: 75px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); aspect-ratio: 1 / 1;">
+                    <img src="back3.png" alt="FESCO Logo" style="height:63x; width:63px; object-fit:contain;">
+                </div>
             </div>
-            <h1>Income Tax Calculator</h1>
+
+            <h1>FESCO Income Tax Calculator</h1>
             <p>Calculate your annual and monthly tax liability</p>
+            <div style="text-align: right; color: #ffffff; font-size: 14px; margin-top: 10px; margin-bottom: 0;">
+                Made by M Abdullah Zafar
+            </div>
         </div>
 
         <div class="content">
@@ -45,9 +51,13 @@
                     <option value="1780">Grade 14 (Rs 1,780/month)</option>
                     <option value="1780">Grade 15 (Rs 1,780/month)</option>
                     <option value="10278">Grade 16 (Rs 10,278/month)</option>
+                    <option value="18612">Grade 17 (Rs 18,612/month)</option>
+                    <option value="25668">Grade 18 (Rs 25,668/month)</option>
+                    <option value="42979">Grade 19 (Rs 42,979/month)</option>
+                    <option value="53724">Grade 20 (Rs 53,724/month)</option>
+                    <option value="63492">Grade 21 (Rs 63,492/month)</option>
                 </select>
             </div>
-
 
             <div class="form-group">
                 <label><i class="fas fa-home"></i> Housing Status:</label>
@@ -110,7 +120,6 @@
                         <span>Monthly Tax:</span>
                         <span id="monthlyTax" class="result-value">Rs 0</span>
                     </div>
-
                 </div>
 
                 <div id="savedCalculations" class="saved-calculations">

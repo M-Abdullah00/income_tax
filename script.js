@@ -1,201 +1,411 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements
-    const calculateBtn = document.getElementById('calculateBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const printBtn = document.getElementById('printBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const resultsDiv = document.getElementById('results');
-    const savedCalculations = document.getElementById('savedCalculations');
-    const savedList = document.getElementById('savedList');
-    
-    // Event Listeners
-    calculateBtn.addEventListener('click', calculateTax);
-    saveBtn.addEventListener('click', saveCalculation);
-    printBtn.addEventListener('click', printResults);
-    clearBtn.addEventListener('click', clearAll);
-    
-    // Load saved calculations
-    loadSavedCalculations();
-    
-    // Main tax calculation function with CORRECT slab calculations
-    function calculateTax() {
-        const monthlySalary = parseFloat(document.getElementById('monthlySalary').value) || 0;
-        const electricityMonthly = parseFloat(document.getElementById('electricityGrade').value) || 0;
-        const gradeIndex = document.getElementById('electricityGrade').selectedIndex;
-        const houseRentRate = parseInt(document.getElementById('houseRentRate').value);
+:root {
+    --primary: #4361ee;
+    --primary-light: #4895ef;
+    --secondary: #3f37c9;
+    --accent: #7209b7;
+    --success: #4cc9f0;
+    --info: #4361ee;
+    --warning: #f72585;
+    --danger: #ef233c;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+}
 
-        // House rent values per grade and rate (update values as needed)
-        const houseRentValues = {
-            30: [0, 1337, 1367, 1413, 1458, 1503, 1544, 1589, 1650, 1719, 1781, 1853, 1961, 2091, 2214, 2349, 2727], // index 0 is 'None'
-            45: [0, 2006, 2049, 2120, 2187, 2255, 2316, 2384, 2474, 2579, 2670, 2778, 2940, 3135, 3321, 3524, 4091]
-        };
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        // Get house rent for selected grade and rate
-        const hasHouse = document.querySelector('input[name="house"]:checked').value === 'yes';
-        const houseMonthly = hasHouse ? houseRentValues[houseRentRate][gradeIndex] : 0;
+body {
+    background: url('back1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    line-height: 1.6;
+}
 
-        const annualSalary = monthlySalary * 12;
-        const annualElectricity = electricityMonthly * 12;
-        const annualHouse = houseMonthly * 12;
-        const annualAdditions = annualElectricity + annualHouse;
-        const totalIncome = annualSalary + annualAdditions;
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: -1;
+}
 
-        // Tax calculation logic (unchanged)
-        let annualTax = 0;
-        if (totalIncome <= 600000) {
-            annualTax = 0;
-        } 
-        else if (totalIncome <= 1200000) {
-            // 1% of amount exceeding 600,000
-            annualTax = (totalIncome - 600000) * 0.01;
-        } 
-        else if (totalIncome <= 2200000) {
-            // Rs 6,000 + 11% of amount exceeding 1,200,000
-            annualTax = 6000 + ((totalIncome - 1200000) * 0.11);
-        } 
-        else if (totalIncome <= 3200000) {
-            // Rs 116,000 + 23% of amount exceeding 2,200,000
-            annualTax = 116000 + ((totalIncome - 2200000) * 0.23);
-        } 
-        else if (totalIncome <= 4100000) {
-            // Rs 346,000 + 30% of amount exceeding 3,200,000
-            annualTax = 346000 + ((totalIncome - 3200000) * 0.30);
-        } 
-        else {
-            // Rs 616,000 + 35% of amount exceeding 4,100,000
-            annualTax = 616000 + ((totalIncome - 4100000) * 0.35);
-        }
-        
-        // Apply surcharge if total income exceeds 10 million
-        if (totalIncome > 10000000) {
-            const surcharge = annualTax * 0.10;
-            annualTax += surcharge;
-        }
-        
-        // Calculate monthly tax and effective rate
-        const monthlyTax = annualTax / 12;
-        const effectiveTaxRate = totalIncome > 0 ? (annualTax / totalIncome * 100) : 0;
+.container {
+    width: 100%;
+    max-width: 950px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
 
-        document.getElementById('annualSalary').textContent = 'Rs ' + Math.round(annualSalary);
-        document.getElementById('annualAdditions').textContent = 'Rs ' + Math.round(annualAdditions);
-        document.getElementById('taxRate').textContent = Math.round(effectiveTaxRate) + '%';
-        document.getElementById('annualTax').textContent = 'Rs ' + Math.round(annualTax);
-        document.getElementById('monthlyTax').textContent = 'Rs ' + Math.round(monthlyTax);
-        document.getElementById('totalIncome').textContent = 'Rs ' + Math.round(totalIncome);
+.header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
 
-        // Show results with animation
-        resultsDiv.classList.add('show');
-        
-        // Scroll to results
-        resultsDiv.scrollIntoView({ behavior: 'smooth' });
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.header-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.content {
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--secondary);
+    font-size: 1.1rem;
+}
+
+label i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: white;
+    color: var(--dark);
+}
+
+input[type="number"]:focus, select:focus {
+    border-color: var(--primary-light);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+input[type="radio"] {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+
+button {
+    color: white;
+    border: none;
+    padding: 16px;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button i {
+    font-size: 1.2rem;
+}
+
+.btn-primary {
+    background: var(--primary);
+}
+
+.btn-success {
+    background: var(--success);
+}
+
+.btn-info {
+    background: var(--info);
+}
+
+.btn-warning {
+    background: var(--warning);
+}
+
+.btn-danger {
+    background: var(--danger);
+}
+
+.results-container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 20px;
+    border-left: 5px solid var(--primary);
+    display: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.results-container h2 {
+    color: var(--primary);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+}
+
+.results-container h2 i {
+    font-size: 1.8rem;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.result-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+.result-item span:first-child {
+    font-weight: 600;
+    color: var(--gray);
+}
+
+.result-item span:last-child {
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.highlight {
+    background: rgba(67, 97, 238, 0.1);
+    border: 1px solid rgba(67, 97, 238, 0.2);
+    font-weight: bold;
+}
+
+.saved-calculations {
+    margin-top: 40px;
+    display: none;
+}
+
+.saved-calculations h3 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+}
+
+.saved-calculations h3 i {
+    font-size: 1.5rem;
+}
+
+.saved-item {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.saved-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.saved-item div {
+    flex: 1;
+}
+
+.saved-item strong {
+    color: var(--primary);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.delete-btn {
+    background: var(--danger);
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    margin-left: 15px;
+}
+
+.result-value {
+    font-weight: bold;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.results-container.show {
+    display: block;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.saved-calculations.show {
+    display: block;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        border-radius: 15px;
     }
     
-    // Save calculation to localStorage
-    function saveCalculation() {
-        if (!resultsDiv.classList.contains('show')) {
-            alert('Please calculate tax first before saving');
-            return;
-        }
-        
-        const calculation = {
-            date: new Date().toLocaleString(),
-            monthlySalary: document.getElementById('monthlySalary').value,
-            electricityGrade: document.getElementById('electricityGrade').value,
-            hasHouse: document.querySelector('input[name="house"]:checked').value,
-            totalIncome: document.getElementById('totalIncome').textContent,
-            annualTax: document.getElementById('annualTax').textContent,
-            monthlyTax: document.getElementById('monthlyTax').textContent
-        };
-        
-        // Get existing saved calculations or initialize empty array
-        let savedCalcs = JSON.parse(localStorage.getItem('taxCalculations')) || [];
-        
-        // Add new calculation
-        savedCalcs.push(calculation);
-        
-        // Save to localStorage
-        localStorage.setItem('taxCalculations', JSON.stringify(savedCalcs));
-        
-        // Reload saved calculations
-        loadSavedCalculations();
-        
-        // Show saved section
-        savedCalculations.classList.add('show');
-        
-        // Show success message
-        alert('Calculation saved successfully!');
+    .header {
+        padding: 25px;
     }
     
-    // Load saved calculations from localStorage
-    function loadSavedCalculations() {
-        const savedCalcs = JSON.parse(localStorage.getItem('taxCalculations')) || [];
-        
-        savedList.innerHTML = ''; // Clear previous list
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .content {
+        padding: 25px;
+    }
+    
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
-        if (savedCalcs.length > 0) {
-            savedCalcs.forEach((calc, index) => {
-                const calcElement = document.createElement('div');
-                calcElement.className = 'saved-item';
-                calcElement.innerHTML = `
-                    <div>
-                        <strong>${calc.date}</strong>
-                        <div>Total Income: ${calc.totalIncome}</div>
-                        <div>Monthly Tax: ${calc.monthlyTax}</div>
-                    </div>
-                    <button class="delete-btn" data-index="${index}">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </button>
-                `;
-                savedList.appendChild(calcElement);
-
-                // Add event listener to delete button
-                calcElement.querySelector('.delete-btn').addEventListener('click', function() {
-                    if (confirm('Are you sure you want to delete this calculation?')) {
-                        deleteCalculation(index);
-                    }
-                });
-            });
-
-            savedCalculations.classList.add('show');
-        } else {
-            savedCalculations.classList.remove('show');
-        }
+@media (max-width: 480px) {
+    .header {
+        padding: 20px;
     }
     
-    // Delete a saved calculation
-    function deleteCalculation(index) {
-        let savedCalcs = JSON.parse(localStorage.getItem('taxCalculations')) || [];
-        
-        if (index >= 0 && index < savedCalcs.length) {
-            savedCalcs.splice(index, 1);
-            localStorage.setItem('taxCalculations', JSON.stringify(savedCalcs));
-            loadSavedCalculations(); // Refresh the list
-        }
+    .header h1 {
+        font-size: 1.6rem;
     }
     
-    // Print results
-    function printResults() {
-        if (!resultsDiv.classList.contains('show')) {
-            alert('Please calculate tax first before printing');
-            return;
-        }
-        window.print();
+    .header-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
     }
     
-    // Clear all inputs and results
-    function clearAll() {
-        document.getElementById('monthlySalary').value = '';
-        document.getElementById('electricityGrade').value = '10000';
-        document.getElementById('houseYes').checked = true;
-        resultsDiv.classList.remove('show');
-        savedCalculations.classList.remove('show');
+    .content {
+        padding: 20px;
     }
     
-    // Helper function to format currency
-    function formatCurrency(amount) {
-        return 'Rs ' + amount.toLocaleString('en-IN', {
-            maximumFractionDigits: 0, // No decimal places
-            minimumFractionDigits: 0
-        });
+    input[type="number"], select {
+        padding: 14px;
     }
-});
+    
+    button {
+        padding: 14px;
+    }
+}
